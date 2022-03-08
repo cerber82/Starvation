@@ -4,9 +4,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Main {
 
+        private static ReentrantLock lock = new ReentrantLock(true);
     private static class Worker implements Runnable {
-        
-        ReentrantLock lock = new ReentrantLock(true);
+
 
         private int runCount = 1;
         private final String threadColor;
@@ -18,8 +18,11 @@ public class Main {
         @Override
         public void run() {
             for (int i = 0; i < 100; i++) {
-                synchronized (lock) {
+                lock.lock();
+                try {
                     System.out.format(threadColor + "%s : runCount = %d\n", Thread.currentThread().getName(), runCount++);
+                } finally {
+                    lock.unlock();
                 }
             }
         }
